@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Identitas - Lazbon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .laz-gradient { background: linear-gradient(180deg, #0044ff 0%, #0066ff 100%); }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); }
+        
+        #cameraContainer {
+            display: none; position: fixed; inset: 0; background: #000; z-index: 100;
+            flex-direction: column; align-items: center; justify-content: center;
+        }
+        .face-mask {
+            width: 280px; height: 360px; border: 3px solid rgba(255,255,255,0.8); border-radius: 140px;
+            overflow: hidden; box-shadow: 0 0 0 1000px rgba(0,0,0,0.7);
+            position: relative;
+        }
+        .scan-line {
+            position: absolute; width: 100%; height: 2px; background: #00e5ff;
+            top: 0; left: 0; box-shadow: 0 0 15px #00e5ff;
+            animation: scan 2.5s infinite linear;
+        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        video { width: 100%; height: 100%; object-fit: cover; }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="bg-white px-6 py-5 flex items-center gap-4 sticky top-0 z-30 shadow-sm">
+        <a href="index.html" class="text-slate-400 p-2 -ml-2 hover:text-blue-600 transition-colors">
+            <i class="fas fa-arrow-left text-xl"></i>
+        </a>
+        <h1 class="text-lg font-extrabold text-slate-800 tracking-tight">Verifikasi Identitas</h1>
+    </nav>
+
+    <main class="p-6">
+        <div class="flex items-center gap-3 mb-8">
+            <div class="h-1.5 flex-1 bg-blue-600 rounded-full"></div>
+            <div class="h-1.5 flex-1 bg-blue-600 rounded-full shadow-sm shadow-blue-100"></div>
+            <div class="h-1.5 flex-1 bg-slate-200 rounded-full"></div>
+        </div>
+
+        <div class="space-y-8">
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shadow-lg shadow-blue-100">01</span>
+                        Foto KTP Asli
+                    </h3>
+                </div>
+                
+                <input type="file" id="ktpInput" accept="image/*" class="hidden">
+                <div id="ktpBox" onclick="document.getElementById('ktpInput').click()" 
+                     class="relative border-2 border-dashed border-slate-200 rounded-[2.5rem] bg-white h-52 flex flex-col items-center justify-center cursor-pointer bg-cover bg-center overflow-hidden transition-all hover:border-blue-400 active:scale-[0.98] card-shadow">
+                    
+                    <div id="ktpIcon" class="text-center group">
+                        <div class="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-camera-retro text-2xl text-slate-300"></i>
+                        </div>
+                        <p class="text-[11px] font-bold text-slate-500 uppercase tracking-widest">Ketuk untuk Ambil Foto</p>
+                    </div>
+                    
+                    <div id="ktpSuccessOverlay" class="hidden absolute inset-0 bg-blue-900/40 backdrop-blur-[2px] flex items-center justify-center text-white">
+                        <div class="text-center">
+                            <i class="fas fa-check-circle text-3xl mb-2"></i>
+                            <p class="text-[10px] font-bold uppercase tracking-widest">KTP Terunggah</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="font-bold text-slate-800 flex items-center gap-2">
+                        <span class="bg-blue-600 text-white w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-black shadow-lg shadow-blue-100">02</span>
+                        Verifikasi Wajah
+                    </h3>
+                </div>
+
+                <div class="bg-white rounded-[2.5rem] p-6 card-shadow border border-white flex items-center justify-between">
+                    <div class="flex items-center gap-4">
+                        <div class="w-14 h-14 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 shadow-inner">
+                            <i class="fas fa-user-shield text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-sm text-slate-700">Liveness Check</p>
+                            <p class="text-[10px] text-slate-400 font-medium">Sistem Biometrik Aktif</p>
+                        </div>
+                    </div>
+                    <button onclick="openCamera()" class="bg-slate-900 text-white px-5 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-blue-600 transition-colors shadow-lg">
+                        Mulai
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="cameraContainer">
+        <div class="text-white text-center mb-10 px-10 relative z-20">
+            <h2 id="instruction" class="text-xl font-extrabold tracking-tight">Posisikan Wajah</h2>
+            <div class="h-1 w-12 bg-blue-500 mx-auto mt-2 rounded-full"></div>
+        </div>
+        
+        <div class="face-mask">
+            <div class="scan-line"></div>
+            <video id="webcam" autoplay playsinline></video>
+        </div>
+        
+        <button onclick="closeCamera()" class="mt-16 text-white/40 text-[10px] font-bold uppercase tracking-[0.3em]">Batalkan Proses</button>
+    </div>
+
+    <div id="successPopup" class="hidden fixed inset-0 bg-slate-900/90 backdrop-blur-md z-[200] flex items-center justify-center px-8">
+        <div class="bg-white rounded-[3rem] p-10 w-full max-w-sm text-center shadow-2xl">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <i class="fas fa-check-double text-4xl"></i>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 mb-2">Verifikasi Sukses</h3>
+            <p class="text-xs text-slate-400 mb-8 leading-relaxed">Identitas berhasil dikonfirmasi. Mengalihkan ke halaman status...</p>
+            <button onclick="goToPage3()" 
+                    class="w-full laz-gradient text-white py-5 rounded-[1.5rem] font-bold uppercase tracking-widest text-[11px] shadow-xl shadow-blue-200">
+                OK, Mengerti
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // KTP Upload Logic
+        document.getElementById('ktpInput').onchange = function() {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const box = document.getElementById('ktpBox');
+                    const overlay = document.getElementById('ktpSuccessOverlay');
+                    const icon = document.getElementById('ktpIcon');
+                    box.style.backgroundImage = `url(${e.target.result})`;
+                    box.style.borderStyle = 'solid';
+                    box.style.borderColor = '#10b981';
+                    overlay.classList.remove('hidden');
+                    icon.classList.add('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        };
+
+        // Advanced Face Scan Logic & Redirect
+        const container = document.getElementById('cameraContainer');
+        const instruction = document.getElementById('instruction');
+        const video = document.getElementById('webcam');
+
+        async function openCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                video.srcObject = stream;
+                container.style.display = 'flex';
+                
+                // Urutan Instruksi
+                setTimeout(() => { instruction.innerText = "Tengok Perlahan ke KIRI"; }, 2000);
+                setTimeout(() => { instruction.innerText = "Tengok Perlahan ke KANAN"; }, 4000);
+                setTimeout(() => { 
+                    instruction.innerText = "Verifikasi Selesai...";
+                    instruction.classList.add('text-emerald-400');
+                }, 6000);
+                
+                // Munculkan Popup dan matikan kamera
+                setTimeout(() => {
+                    closeCamera();
+                    document.getElementById('successPopup').classList.remove('hidden');
+                }, 7500);
+            } catch (err) { alert("Akses kamera ditolak."); }
+        }
+
+        function closeCamera() {
+            const stream = video.srcObject;
+            if (stream) stream.getTracks().forEach(t => t.stop());
+            container.style.display = 'none';
+        }
+
+        // Fungsi navigasi ke page3.html
+        function goToPage3() {
+            window.location.href = 'page3.html';
+        }
+    </script>
+</body>
+</html>

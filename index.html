@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lazbon - Solusi Kredit Kilat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .laz-gradient { background: linear-gradient(180deg, #0044ff 0%, #0066ff 100%); }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02); }
+        
+        /* Custom Slider */
+        input[type=range] { -webkit-appearance: none; background: #e2e8f0; height: 6px; border-radius: 99px; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%;
+            background: #ffffff; border: 4px solid #0044ff; cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .dana-gradient { background: linear-gradient(90deg, #118ee1 0%, #1081cf 100%); }
+        
+        /* Glass Effect */
+        .glass-badge {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <nav class="laz-gradient px-6 pt-6 pb-2 text-white flex justify-between items-center relative z-10">
+        <div class="flex items-center gap-1">
+            <span class="text-2xl font-extrabold italic tracking-tighter">Lazbon</span>
+            <span class="text-[10px] bg-yellow-400 text-blue-900 px-1.5 py-0.5 rounded font-bold ml-2">PRO</span>
+        </div>
+        <div class="flex gap-4 items-center">
+            <i class="fas fa-headset text-lg opacity-80"></i>
+            <i class="fas fa-bell text-lg opacity-80"></i>
+        </div>
+    </nav>
+
+    <header class="laz-gradient text-white px-6 pt-4 pb-24 rounded-b-[3rem] relative overflow-hidden">
+        <div class="relative z-10">
+            <div class="glass-badge inline-flex items-center gap-2 px-3 py-1 rounded-full mb-6">
+                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                <span class="text-[10px] font-semibold tracking-wide uppercase">Terdaftar & Diawasi OJK</span>
+            </div>
+            
+            <p class="text-blue-100 text-xs font-medium opacity-90 mb-1">Limit Pinjaman Tersedia</p>
+            <div class="flex items-baseline gap-1">
+                <span class="text-2xl font-bold opacity-80">Rp</span>
+                <h1 class="text-5xl font-extrabold tracking-tight">20.000.000</h1>
+            </div>
+        </div>
+        
+        <div class="absolute -right-10 -bottom-10 w-48 h-48 bg-white opacity-10 rounded-full blur-3xl"></div>
+    </header>
+
+    <main class="px-6 -mt-16 relative z-20 pb-10">
+        
+        <div class="bg-white rounded-[2.5rem] card-shadow p-8 border border-white/50 mb-6">
+            
+            <section id="defaultView" class="space-y-8">
+                <div class="text-center">
+                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-3">Tentukan Nominal</p>
+                    <h2 id="loanValue" class="text-4xl font-black text-gray-900 tracking-tighter">Rp 5.000.000</h2>
+                </div>
+
+                <div class="relative px-2">
+                    <input type="range" id="loanRange" min="1000000" max="20000000" step="500000" value="5000000" class="w-full outline-none">
+                    <div class="flex justify-between mt-4 text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+                        <span>Min Rp 1 Jt</span>
+                        <span>Max Rp 20 Jt</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <span class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Tenor Pinjaman</span>
+                        <span class="text-sm font-bold text-slate-700">12 Bulan</span>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                        <span class="block text-[9px] font-bold text-slate-400 uppercase mb-1">Cicilan Bulanan</span>
+                        <span id="monthlyValue" class="text-sm font-bold text-slate-700">Rp 458.333</span>
+                    </div>
+                </div>
+
+                <button onclick="window.location.href='page2.html'" class="w-full laz-gradient text-white py-5 rounded-[1.5rem] font-bold text-sm tracking-widest uppercase shadow-lg shadow-blue-200 active:scale-95 transition-all">
+                    Aktivasi Limit Sekarang
+                </button>
+            </section>
+
+            <section id="successView" class="hidden space-y-8 animate-in fade-in duration-700">
+                <div class="flex items-center gap-4 bg-emerald-50 p-4 rounded-2xl border border-emerald-100">
+                    <div class="bg-emerald-500 text-white w-10 h-10 rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-emerald-100">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    <div>
+                        <h4 class="text-xs font-bold text-emerald-900">Verifikasi Berhasil</h4>
+                        <p class="text-[10px] text-emerald-600 font-medium">Data Anda sudah tervalidasi oleh sistem.</p>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <p class="text-gray-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Dana Siap Dicairkan</p>
+                    <h2 id="finalLoanValue" class="text-5xl font-black text-blue-600 tracking-tighter">Rp 0</h2>
+                </div>
+
+                <button onclick="openDanaModal()" class="w-full bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-sm tracking-widest uppercase shadow-xl shadow-blue-200 animate-pulse active:scale-95 transition-all">
+                    Cairkan Ke Dana
+                </button>
+            </section>
+        </div>
+
+        <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="text-center">
+                <div class="bg-white w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-2 card-shadow">
+                    <i class="fas fa-bolt text-blue-500"></i>
+                </div>
+                <p class="text-[9px] font-bold text-gray-500 uppercase">Proses 5 Mnt</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-white w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-2 card-shadow">
+                    <i class="fas fa-shield-alt text-emerald-500"></i>
+                </div>
+                <p class="text-[9px] font-bold text-gray-500 uppercase">Data Aman</p>
+            </div>
+            <div class="text-center">
+                <div class="bg-white w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-2 card-shadow">
+                    <i class="fas fa-percentage text-orange-500"></i>
+                </div>
+                <p class="text-[9px] font-bold text-gray-500 uppercase">Bunga Rendah</p>
+            </div>
+        </div>
+
+        <div class="text-center opacity-40">
+            <p class="text-[8px] font-bold text-gray-400 uppercase tracking-widest mb-4">Mitra Resmi & Keamanan</p>
+            <div class="flex justify-center items-center gap-6">
+                <span class="text-sm font-black italic text-gray-600 tracking-tighter">OJK</span>
+                <span class="text-sm font-black text-gray-600 tracking-tighter uppercase">AFPI</span>
+                <i class="fas fa-university text-lg"></i>
+                <i class="fas fa-lock text-lg"></i>
+            </div>
+        </div>
+    </main>
+
+    <div id="danaModal" class="hidden fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center">
+        <div class="bg-white w-full max-w-md rounded-t-[3rem] sm:rounded-[3rem] p-10 animate-in slide-in-from-bottom duration-300">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-8"></div>
+            
+            <div class="flex justify-center mb-6">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Logo_danain.png/640px-Logo_danain.png" alt="DANA" class="h-8">
+            </div>
+            
+            <h3 class="text-xl font-extrabold text-center text-slate-800 mb-2">Hubungkan Dompet Digital</h3>
+            <p class="text-center text-xs text-slate-400 mb-8 px-4">Pastikan nomor DANA Anda aktif dan sesuai dengan identitas KTP Anda.</p>
+            
+            <div class="bg-slate-50 border-2 border-slate-100 rounded-2xl p-4 flex items-center gap-4 mb-6 focus-within:border-blue-500 transition-all">
+                <span class="font-bold text-slate-700 border-r pr-4">+62</span>
+                <input type="tel" placeholder="812 xxxx xxxx" class="bg-transparent w-full outline-none font-bold text-lg text-slate-800 tracking-widest placeholder:text-slate-300">
+            </div>
+
+            <button class="w-full dana-gradient text-white py-5 rounded-2xl font-extrabold text-sm tracking-widest uppercase shadow-xl shadow-blue-100 mb-4">
+                Konfirmasi Pencairan
+            </button>
+            <button onclick="closeDanaModal()" class="w-full text-slate-400 text-[10px] font-bold uppercase tracking-widest">Batalkan Transaksi</button>
+        </div>
+    </div>
+
+    <script>
+        const range = document.getElementById('loanRange');
+        const loanValueDisplay = document.getElementById('loanValue');
+        const monthlyValueDisplay = document.getElementById('monthlyValue');
+        const formatIDR = (num) => "Rp " + new Intl.NumberFormat('id-ID').format(num);
+
+        // Update Slider Logic
+        range.addEventListener('input', function() {
+            const val = parseInt(this.value);
+            loanValueDisplay.innerText = formatIDR(val);
+            monthlyValueDisplay.innerText = formatIDR(Math.round((val + (val * 0.1)) / 12));
+            localStorage.setItem('selectedLoan', val);
+        });
+
+        // App Initialization
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const savedLoan = localStorage.getItem('selectedLoan') || 5000000;
+            
+            if (urlParams.get('status') === 'success') {
+                document.getElementById('defaultView').classList.add('hidden');
+                document.getElementById('successView').classList.remove('hidden');
+                document.getElementById('finalLoanValue').innerText = formatIDR(savedLoan);
+            } else {
+                range.value = savedLoan;
+                loanValueDisplay.innerText = formatIDR(savedLoan);
+                monthlyValueDisplay.innerText = formatIDR(Math.round((parseInt(savedLoan) + (parseInt(savedLoan) * 0.1)) / 12));
+            }
+        }
+
+        function openDanaModal() { document.getElementById('danaModal').classList.remove('hidden'); }
+        function closeDanaModal() { document.getElementById('danaModal').classList.add('hidden'); }
+    </script>
+
+</body>
+</html>
